@@ -1,0 +1,29 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: HCRB for gHB states
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Jayanth
+    family-names: Jayakumar
+    email: jay2nth@gmail.com
+    affiliation: University of Warsaw
+    orcid: 'https://orcid.org/0000-0002-6377-2724'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.15237091
+    description: HCRB for gHB states
+repository-code: 'https://github.com/Jayanth6626/HCRB-for-gHB-states'
+abstract: >-
+  Numerical evaluation of the Holevo Cramér-Rao bound for
+  generalized Holland-Burnett states.
+keywords:
+  - Quantum Metrology
+license: MIT
+commit: 00b3f62d960c34dd8be31c19483718373c03908f
+version: v1.0.0
+date-released: '2025-04-17'
