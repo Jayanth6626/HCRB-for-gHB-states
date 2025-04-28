@@ -4,7 +4,6 @@ import numpy as np
 import scipy as sc
 import sympy as sp
 import mpmath as mp
-import cvxpy as cp
 from numpy.linalg import matrix_rank
 from numpy.linalg import inv
 from numpy import pi
@@ -105,7 +104,7 @@ def derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,avg,epsilon):
 
 #-----------------------------------------------------
 
-# Note: Copy and paste the code from the HCRB.py script here, and load the 'hcrb' function to evaluate the following
+# Note: Integrate the code from the HCRB.py script here, and load the 'hcrb' function to evaluate the following functions
 
 # Computing HCRB for gHB states
 
@@ -126,84 +125,3 @@ def hcrbphideltaghb(T,n,eta_a1,eta_b1,phi2,delta2,y):
     derrhothnew1=[derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[0],derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[2]]
 
     return hcrb(phasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7), derrhothnew1, weightmatrix(y))
-
-#-----------------------------------------------------
-
-
-# Supplementary code: Construction of n qubit separable states for joint-estimation of phase and diffusion - no losses
-
-def thermalstate_qb(n):
-
-    dim=2**n
-    mat3=sp.eye(dim)
-    norm=sp.Sum(sp.Pow(n/2,k)/sp.Pow(1+(n/2),k+1), (k, 0, dim-1)).doit()
-    for i in range(dim):
-        mat3[i,i]=(1/norm)*sp.Pow(n/2,i)/sp.Pow(1+(n/2),i+1)
-    return mat3
-
-def gaussian(phi1,phi,delta):
-    
-    gauss=sp.exp(-((phi1-phi)**2)/(2*delta**2))/sp.sqrt(2*pi*delta**2)
-    
-    return gauss
-
-# Building the n qubit phase diffused output state in sympy
-
-def twoqubitphasediffstate(phi,delta,theta,epsilon,n):
-    
-    # input single qubit state
-    p1=sp.Matrix([[sp.cos(theta/2)**2, sp.cos(theta/2)*sp.sin(theta/2)], [sp.cos(theta/2)*sp.sin(theta/2), sp.sin(theta/2)**2]])
-    # defining the single qubit phase shift (phi) unitary e^{-i \phi \sigma_z/2}, where sigma_z is the Pauli z matrix
-    phaseshift=sp.Matrix([[sp.exp(-sp.I*phi1/2), 0], [0, sp.exp(sp.I*phi1/2)]])
-    # n qubit input state
-    inputprobe=reduce(TensorProduct,[p1]*n)
-    # n qubit unitary 
-    phaseshift2=reduce(TensorProduct,[phaseshift]*n)
-    # after phase shift operation, the phase diffusion (delta) noise channel is acted upon as follows. The output state is a mixed state with two unknown parameters (phi, delta) encoded
-    outputprobe=(sp.Mul(phaseshift2,inputprobe,sp.conjugate(phaseshift2).T)*gaussian(phi1,phi,delta)).applyfunc(lambda x: sp.integrate(x, (phi1,-sp.oo,sp.oo)))
-    # regularization: since the output state is NOT full rank, we make it full rank by adding an "epsilon" fraction of a thermal state of same dimension to it
-    return (1-epsilon)*outputprobe+epsilon*thermalstate_qb(n)
-
-# Converting the output state to numpy
-
-def numpytwoqubitphasediffstate(phi,delta,theta,epsilon,n):
-
-    return np.array(twoqubitphasediffstate(phi,delta,theta,epsilon,n)).astype(np.complex128)
-
-# Taking the derivative of the output state with respect to phi in sympy
-
-def derphitwoqubitphasediffstate(phi,delta,theta,epsilon,n):
-    
-    return twoqubitphasediffstate(phi,delta,theta,epsilon,n).applyfunc(lambda x: sp.diff(x,phi))
-
-# Converting the phi derivative state to numpy
-
-def numpyderphitwoqubitphasediffstate(phi2,delta,theta,epsilon,n):
-    
-    der1=derphitwoqubitphasediffstate(phi,delta,theta,epsilon,n).subs(phi,phi2)
-
-    return np.array(der1).astype(np.complex128)
-
-# Taking the derivative of the output state with respect to delta in sympy
-
-def derdeltatwoqubitphasediffstate(phi,delta,theta,epsilon,n):
-    
-    return twoqubitphasediffstate(phi,delta,theta,epsilon,n).applyfunc(lambda x: sp.diff(x,delta))
-
-# Converting the delta derivative state to numpy
-
-def numpyderdeltatwoqubitphasediffstate(phi,delta1,theta,epsilon,n):
-    
-    der2=derdeltatwoqubitphasediffstate(phi,delta,theta,epsilon,n).subs(delta,delta1)
-    
-    return np.array(der2).astype(np.complex128)  
-
-#-----------------------------------------------------
-
-# Computing HCRB for qubits
-
-def hcrbqubit(phi2,delta1,theta,n,y):
-
-    derrhotq=[numpyderphitwoqubitphasediffstate(phi2,delta1,theta,1e-13,n),numpyderdeltatwoqubitphasediffstate(phi2,delta1,theta,1e-13,n)]
-                    
-    return hcrb(numpytwoqubitphasediffstate(phi2,delta1,theta,1e-13,n), derrhotq, weightmatrix(y))
