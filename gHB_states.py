@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[31]:
-
-
 # Construction of gHB states for joint-estimation of phase, loss, and diffusion
 
 import numpy as np
@@ -91,6 +85,8 @@ def dercoefficient(T,phi2,delta2,eta_a1,eta_b1,i,j,k,l):
     
     return [npderphi(phi2,delta2,eta_a1,eta_b1),npdereta_a(phi2,delta2,eta_a1,eta_b1),npderdelta(phi2,delta2,eta_a1,eta_b1)]
 
+# derivatives of the state with respect to each parameter
+
 def derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,avg,epsilon):
     
     derphase=np.zeros(((T+1)**2,(T+1)**2),dtype=np.complex128)
@@ -110,7 +106,7 @@ def derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,avg,epsilon):
 
 #-----------------------------------------------
 
-# Construction of n qubit separable states for joint-estimation of phase and diffusion - no losses
+# Supplementary code: Construction of n qubit separable states for joint-estimation of phase and diffusion - no losses
 
 def thermalstate_qb(n):
 
@@ -178,11 +174,9 @@ def numpyderdeltatwoqubitphasediffstate(phi,delta1,theta,epsilon,n):
     
     return np.array(der2).astype(np.complex128)  
 
+#-----------------------------------------------
 
-# In[25]:
-
-
-# Note: Copy and paste the code from HCRB.py script here, and load the 'hcrb' function for evaluation
+# Note: Copy and paste the code from the HCRB.py script here, and load the 'hcrb' function to evaluate the following
 
 # Computing HCRB for gHB states
 
@@ -204,6 +198,8 @@ def hcrbphideltaghb(T,n,eta_a1,eta_b1,phi2,delta2,y):
 
     return hcrb(phasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7), derrhothnew1, weightmatrix(y))
 
+#-----------------------------------------------------
+
 # Computing HCRB for qubits
 
 def hcrbqubit(phi2,delta1,theta,n,y):
@@ -211,4 +207,3 @@ def hcrbqubit(phi2,delta1,theta,n,y):
     derrhotq=[numpyderphitwoqubitphasediffstate(phi2,delta1,theta,1e-13,n),numpyderdeltatwoqubitphasediffstate(phi2,delta1,theta,1e-13,n)]
                     
     return hcrb(numpytwoqubitphasediffstate(phi2,delta1,theta,1e-13,n), derrhotq, weightmatrix(y))
-
