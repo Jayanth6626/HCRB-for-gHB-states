@@ -103,8 +103,32 @@ def derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,avg,epsilon):
     
     return [(1-epsilon)*derphase+epsilon*thermalstate(T,avg),(1-epsilon)*dereta_a+epsilon*thermalstate(T,avg),(1-epsilon)*derdelta+epsilon*thermalstate(T,avg)]
 
+#-----------------------------------------------------
 
-#-----------------------------------------------
+# Note: Copy and paste the code from the HCRB.py script here, and load the 'hcrb' function to evaluate the following
+
+# Computing HCRB for gHB states
+
+def hcrbphietaghb(T,n,eta_a1,eta_b1,phi2,delta2,y):
+    
+    derrhothnew=[derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[0],derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[1]]
+
+    return hcrb(phasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7), derrhothnew, weightmatrix(y))
+
+def hcrbphideltaghb(T,n,eta_a1,eta_b1,phi2,delta2,y):
+    
+    derrhothnew1=[derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[0],derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[2]]
+
+    return hcrb(phasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7), derrhothnew1, weightmatrix(y))
+
+def hcrbphideltaghb(T,n,eta_a1,eta_b1,phi2,delta2,y):
+    
+    derrhothnew1=[derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[0],derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[2]]
+
+    return hcrb(phasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7), derrhothnew1, weightmatrix(y))
+
+#-----------------------------------------------------
+
 
 # Supplementary code: Construction of n qubit separable states for joint-estimation of phase and diffusion - no losses
 
@@ -173,30 +197,6 @@ def numpyderdeltatwoqubitphasediffstate(phi,delta1,theta,epsilon,n):
     der2=derdeltatwoqubitphasediffstate(phi,delta,theta,epsilon,n).subs(delta,delta1)
     
     return np.array(der2).astype(np.complex128)  
-
-#-----------------------------------------------
-
-# Note: Copy and paste the code from the HCRB.py script here, and load the 'hcrb' function to evaluate the following
-
-# Computing HCRB for gHB states
-
-def hcrbphietaghb(T,n,eta_a1,eta_b1,phi2,delta2,y):
-    
-    derrhothnew=[derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[0],derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[1]]
-
-    return hcrb(phasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7), derrhothnew, weightmatrix(y))
-
-def hcrbphideltaghb(T,n,eta_a1,eta_b1,phi2,delta2,y):
-    
-    derrhothnew1=[derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[0],derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[2]]
-
-    return hcrb(phasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7), derrhothnew1, weightmatrix(y))
-
-def hcrbphideltaghb(T,n,eta_a1,eta_b1,phi2,delta2,y):
-    
-    derrhothnew1=[derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[0],derphasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7)[2]]
-
-    return hcrb(phasediffetastatereg(T,n,eta_a1,eta_b1,phi2,delta2,1,1e-7), derrhothnew1, weightmatrix(y))
 
 #-----------------------------------------------------
 
