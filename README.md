@@ -4,4 +4,4 @@ Numerical evaluation of the Holevo Cramér-Rao bound (HCRB) for generalized Holl
 
 This code was used to compute the HCRB, supporting the results of the arXiv paper: [Measurement compatibility in multiparameter quantum interferometry](https://doi.org/10.48550/arXiv.2504.18324).
 
-Acknowledgement: I thank Stack Overflow user [Jérôme Richard](https://stackoverflow.com/users/12939557/j%C3%A9r%C3%B4me-richard) and Mathematica Stack exchange user [Henrik Schumacher](https://mathematica.stackexchange.com/users/38178/henrik-schumacher) for their useful inputs in optimizing the HCRB code for higher dimensions. 
+Acknowledgement: I thank Stack Overflow user [Jérôme Richard](https://stackoverflow.com/users/12939557/j%C3%A9r%C3%B4me-richard) and Mathematica Stack exchange user [Henrik Schumacher](https://mathematica.stackexchange.com/users/38178/henrik-schumacher) for their valuable inputs in optimizing the HCRB code for higher dimensions. 
